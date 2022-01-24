@@ -4,3 +4,12 @@ spring:
       enabled: true
       max-file-size: 999MB
       max-request-size: 999MB
+
+logging:
+  level:
+    root: INFO
+    org:
+      apache:
+        coyote:
+          http11:
+            Http11InputBuffer: INFO

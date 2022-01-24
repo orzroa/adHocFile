@@ -23,16 +23,16 @@ public class FileContextHolder {
 
     // up and set file
     public static void up(String slot, MultipartFile file) {
-        fileMap.put(slot, file);
-        statusMap.put(slot, WAITING);
+        fileMap.put(slot.toUpperCase(), file);
+        statusMap.put(slot.toUpperCase(), WAITING);
     }
 
     // before download
     public static MultipartFile open(String slot) {
-        MultipartFile file = fileMap.get(slot);
+        MultipartFile file = fileMap.get(slot.toUpperCase());
         if (file != null) {
-            fileMap.remove(slot);
-            statusMap.put(slot, STREAMING);
+            fileMap.remove(slot.toUpperCase());
+            statusMap.put(slot.toUpperCase(), STREAMING);
             return file;
         } else {
             return null;
@@ -41,11 +41,11 @@ public class FileContextHolder {
 
     // after downloaded
     public static void close(String slot) {
-        statusMap.remove(slot);
+        statusMap.remove(slot.toUpperCase());
     }
 
     public static FileStatus getStatus(String slot) {
-        FileStatus status = statusMap.get(slot);
+        FileStatus status = statusMap.get(slot.toUpperCase());
         return status == null ? NONE : status;
     }
 }
