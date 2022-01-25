@@ -70,57 +70,98 @@
     border-radius: 5px;
     margin: 0;
   }
-    </style>
-    <script>
-      window.addEventListener('load', function() {
-        switch(getQueryVariable('result')) {
-          case 's': alert('文件传输成功！')
-                    break;
-          case 'f': alert('文件传输失败！')
-                    break;
-        }
+  .mask {
+    display: none; /*开始的时候不显示*/
+    z-index: 2;
 
-        var code = '';
-        const max=25
-        for(var i=0;i<6;i++) {
+    /*蒙版应覆盖整个可视页面*/
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+
+    background: #000; /*给蒙版加点颜色*/
+    opacity: 0.5; /*透明度，值为1时会变成黑疙瘩...*/
+  }
+    </style>
+    <script type="text/javascript" src="jquery-3.6.0.min.js"></script>
+    <script>
+      var code = '';
+
+      function init() {
+        const max = 25;
+        code = '';
+        for (let i = 0; i < 6 ; i++) {
           code += String.fromCharCode('A'.charCodeAt() + parseInt(Math.random()*(max+1),10));
         }
-        document.getElementById('upCode').value = code
-        document.getElementById('upTitle').textContent = '上传码：' + code
+        $('#upTitle').html( '上传码：' + code);
+        $('#formUp').trigger("reset");
+        $('.mask').fadeOut();
+      }
+
+      window.addEventListener('load', function() {
+        init();
       })
 
-      function getQueryVariable(variable) {
-        var query = window.location.search.substring(1);
-        var vars = query.split("&");
-        for (var i=0;i<vars.length;i++) {
-          var pair = vars[i].split("=");
-          if(pair[0] == variable) {return pair[1];}
-        }
-        return(false);
+      function copy(text) {
+        let oInput = document.createElement('input')
+        oInput.value = text
+        document.body.appendChild(oInput)
+        oInput.select() // 选择对象
+        document.execCommand('Copy') // 执行浏览器复制命令
+        oInput.parentNode.removeChild(oInput)
+      }
+
+      function up() {
+        $('.mask').fadeIn();
+        copy(code);
+
+        let data = new FormData();
+        data.append('file', $('#file')[0].files[0]);
+
+        $.ajax({
+        //几个参数需要注意一下
+          type: "POST", //方法类型
+          url: "up/" + code, //url
+          data: data,
+          cache: false,
+          processData: false,
+          contentType: false,
+          success: function (result) {
+            alert(result);
+            init();
+          },
+          error : function() {
+            alert("调用异常！");
+            init();
+          }
+        });
       }
 
       function down() {
-        const code = document.getElementById('downCode').value
-        window.location.href = 'down/' + code
+        const downCode = $('#downCode').val();
+        window.location.href = 'down/' + downCode;
       }
     </script>
 </head>
 <body>
+    <div class="mask"></div>
     <div class="block">
         <h1 id="upTitle">上传</h1>
-        <form name="formUp" method="post" action="up" enctype="multipart/form-data" >
-            <input type="hidden" required="required" placeholder="请输入提取码" id="upCode" name="upCode" readonly/>
-            <input type="file" required="required" placeholder="请选择文件" name="file"/>
-            <div align="center"><button class="but" type="submit">提交</button></div>
+        <form id="formUp" action="javascript:up()" >
+            <input id="file" type="file" required="required" placeholder="请选择文件" name="file"/>
+            <div align="center"><button class="but" type="submit">复制上传码并提交</button></div>
         </form>
+        <div id="qrcode"></div>
     </div>
 
     <HR class="divide" style="FILTER: alpha(opacity=100,finishopacity=0,style=3)" width="80%" color=#987cb9 SIZE=1>
 
     <div class="block">
         <h1>下载</h1>
-        <form name="formDown" action="javascript:down()">
-            <input type="text" required="required" placeholder="请输入提取码" id="downCode" autofocus="autofocus"/>
+        <form id="formDown" action="javascript:down()">
+            <input type="text" required="required" placeholder="请输入上传码" id="downCode" autofocus="autofocus"/>
             <div align="center"><button class="but" type="submit">提交</button></div>
         </form>
     </div>

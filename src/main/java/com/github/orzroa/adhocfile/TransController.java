@@ -47,20 +47,21 @@ public class TransController {
         FileContextHolder.close(slot);
     }
 
-    @PostMapping(value = "/up")
-    public String up(@RequestParam("upCode") String slot, @RequestParam("file") MultipartFile file) throws InterruptedException {
+    @PostMapping(value = "/up/{slot}")
+    @ResponseBody
+    public String up(@PathVariable String slot, @RequestParam("file") MultipartFile file) throws InterruptedException {
         int count = 0;
         FileContextHolder.up(slot, file);
 
         while (FileContextHolder.getStatus(slot) == FileStatus.WAITING) {
             Thread.sleep(1000L);
-            if (count++ > MAX_WAIT_COUNT)         return "redirect:?result=f";
+            if (count++ > MAX_WAIT_COUNT) return "time out";
         }
 
         while (FileContextHolder.getStatus(slot) == FileStatus.STREAMING) {
             Thread.sleep(1000L);
         }
 
-        return "redirect:?result=s";
+        return "file has been downloaded";
     }
 }
