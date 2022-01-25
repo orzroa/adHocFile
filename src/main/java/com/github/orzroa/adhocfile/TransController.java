@@ -54,13 +54,13 @@ public class TransController {
 
         while (FileContextHolder.getStatus(slot) == FileStatus.WAITING) {
             Thread.sleep(1000L);
-            if (count++ > MAX_WAIT_COUNT)         return "redirect:index.html?result=f";
+            if (count++ > MAX_WAIT_COUNT)         return "redirect:?result=f";
         }
 
         while (FileContextHolder.getStatus(slot) == FileStatus.STREAMING) {
             Thread.sleep(1000L);
         }
 
-        return "redirect:index.html?result=s";
+        return "redirect:?result=s";
     }
 }
