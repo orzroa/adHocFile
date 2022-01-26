@@ -143,21 +143,8 @@
       }
 
       function down() {
-        $('.mask').fadeIn();
         const downCode = $('#downCode').val();
-
-        $.ajax({
-        //几个参数需要注意一下
-          type: "GET", //方法类型
-          url: "down/" + downCode, //url
-          success: function (result) {
-            init();
-          },
-          error : function() {
-            alert("调用异常！");
-            init();
-          }
-        });
+        window.location.href = 'down/' + downCode;
       }
     </script>
 </head>
