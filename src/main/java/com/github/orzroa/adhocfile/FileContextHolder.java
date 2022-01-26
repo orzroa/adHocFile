@@ -1,6 +1,5 @@
 package com.github.orzroa.adhocfile;
 
-import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
@@ -10,13 +9,10 @@ import static com.github.orzroa.adhocfile.FileStatus.*;
 
 /**
  * NONE --up--> WAITING --trans--> STREAMING --close--> NONE
- */
-@Data
-public class FileContextHolder {
+ */public class FileContextHolder {
 
-    private static Map<String, MultipartFile> fileMap = new HashMap<>();
-    private static Map<String, FileStatus> statusMap = new HashMap<>();
-
+    private static final Map<String, MultipartFile> fileMap = new HashMap<>();
+    private static final Map<String, FileStatus> statusMap = new HashMap<>();
 
     private FileContextHolder() {
     }

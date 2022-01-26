@@ -21,15 +21,10 @@ public class TransController {
     }
 
     @GetMapping(value = "/down/{slot}")
-    public void down(@PathVariable String slot, HttpServletResponse response) throws IOException, InterruptedException {
+    public void down(@PathVariable String slot, HttpServletResponse response) throws IOException {
 
-        MultipartFile file;
-        int count = 0;
-        do {
-            file = FileContextHolder.open(slot);
-            Thread.sleep(1000L);
-            if (count++ > MAX_WAIT_COUNT) return;
-        } while (file == null);
+        MultipartFile file = FileContextHolder.open(slot);
+        if (file == null) return;
 
         response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         response.setHeader("Content-Disposition", "attachment; filename="

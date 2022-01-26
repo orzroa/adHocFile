@@ -20,11 +20,11 @@
   }
   .block{
     position: relative;
-    top: 30%;
+    top: 15%;
     left:50%;
-    margin: -150px 0 0 -150px;
+    margin: 0px 0 0 -150px;
     width: 300px;
-    height: 450px;
+    height: 300px;
   }
   .block h1{
     color: #fff;
@@ -84,6 +84,9 @@
     background: #000; /*给蒙版加点颜色*/
     opacity: 0.5; /*透明度，值为1时会变成黑疙瘩...*/
   }
+  .mask{
+    background: white url(loading.gif) no-repeat center;
+  }
     </style>
     <script type="text/javascript" src="jquery-3.6.0.min.js"></script>
     <script>
@@ -140,8 +143,21 @@
       }
 
       function down() {
+        $('.mask').fadeIn();
         const downCode = $('#downCode').val();
-        window.location.href = 'down/' + downCode;
+
+        $.ajax({
+        //几个参数需要注意一下
+          type: "GET", //方法类型
+          url: "down/" + downCode, //url
+          success: function (result) {
+            init();
+          },
+          error : function() {
+            alert("调用异常！");
+            init();
+          }
+        });
       }
     </script>
 </head>
